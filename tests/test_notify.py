@@ -15,7 +15,7 @@ from fleet_alerts.store import Store
 from tests.helpers import T0
 
 TZ = ZoneInfo("Asia/Tashkent")
-TOKEN = "123456:AAH-secret-bot-token-value"
+TOKEN = "123456:" + "x" * 30  # placeholder, not a real bot token
 
 
 def view(**kw):
@@ -100,7 +100,7 @@ def test_webhook_signature_roundtrip():
         )
         return httpx.Response(204)
 
-    secret = "s3cret-s3cret-s3cret"
+    secret = "w" * 20
     WebhookChannel("crm", "https://crm.example.com/hook", secret, http=client(handler)).send(view())
     assert json.loads(seen["body"])["unit"]["name"] == "Truck <01>"
     assert verify_signature(secret, seen["ts"], seen["body"], seen["sig"])

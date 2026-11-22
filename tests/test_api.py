@@ -9,7 +9,7 @@ from fleet_alerts.models import AlertEvent
 from fleet_alerts.store import Store
 from tests.helpers import T0, engine, msg
 
-KEY = "test-api-key-0123456789"
+KEY = "k" * 24  # placeholder, not a real key
 
 
 @pytest.fixture
