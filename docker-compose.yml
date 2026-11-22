@@ -1,0 +1,52 @@
+# Demo stack: PostgreSQL + worker + API.
+# By default the worker plays samples/demo-trace.jsonl, so no Wialon account is needed.
+# For a real fleet: set WIALON_TOKEN in .env and replace the worker command with ["worker"].
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: fleet_alerts
+      POSTGRES_USER: fleet_alerts
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fleet_alerts -d fleet_alerts"]
+      interval: 5s
+      retries: 10
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["worker", "--demo", "samples/demo-trace.jsonl", "--speedup", "600"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://fleet_alerts:${POSTGRES_PASSWORD}@db:5432/fleet_alerts
+      RULES_FILE: /app/samples/rules.yaml
+      POLL_INTERVAL_S: "1"
+    depends_on:
+      db: { condition: service_healthy }
+    healthcheck:
+      disable: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+
+  api:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://fleet_alerts:${POSTGRES_PASSWORD}@db:5432/fleet_alerts
+      RULES_FILE: /app/samples/rules.yaml
+    ports:
+      - "127.0.0.1:8080:8080"   # put a TLS reverse proxy (Caddy, nginx) in front for remote access
+    depends_on:
+      db: { condition: service_healthy }
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+
+volumes:
+  pgdata:

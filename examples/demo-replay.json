@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "opened_at": 1794948060,
+    "resolved_at": null,
+    "unit": "Excavator 03 · CAT 320",
+    "unit_id": 202,
+    "rule": "fuel-drain",
+    "severity": "critical",
+    "status": "open",
+    "title": "Fuel drop 46 L while parked",
+    "details": {
+      "litres": 45.8,
+      "level_before": 360.4,
+      "level_after": 314.6,
+      "since": 1794946140,
+      "lat": 41.305,
+      "lon": 69.025
+    }
+  },
+  {
+    "id": 2,
+    "opened_at": 1794971400,
+    "resolved_at": 1794971640,
+    "unit": "Truck 01 · Isuzu NQR",
+    "unit_id": 201,
+    "rule": "overspeed",
+    "severity": "warning",
+    "status": "resolved",
+    "title": "Speed 111 km/h (limit 90)",
+    "details": {
+      "max_speed": 111,
+      "limit": 90.0,
+      "lat": 41.273083,
+      "lon": 69.205,
+      "duration_s": 120
+    }
+  },
+  {
+    "id": 3,
+    "opened_at": 1794982320,
+    "resolved_at": 1794983100,
+    "unit": "Truck 09 · Shacman X3000",
+    "unit_id": 205,
+    "rule": "gps-lost",
+    "severity": "critical",
+    "status": "resolved",
+    "title": "No GPS fix (0 satellites)",
+    "details": {
+      "satellites": 0,
+      "duration_s": 600
+    }
+  },
+  {
+    "id": 4,
+    "opened_at": 1794992940,
+    "resolved_at": 1794993900,
+    "unit": "Van 07 · GAZelle Next",
+    "unit_id": 204,
+    "rule": "power-cut",
+    "severity": "critical",
+    "status": "resolved",
+    "title": "External power 0.3 V (below 9.0 V)",
+    "details": {
+      "volts": 0.28,
+      "lat": 41.33,
+      "lon": 69.215,
+      "duration_s": 60
+    }
+  },
+  {
+    "id": 5,
+    "opened_at": 1795002420,
+    "resolved_at": null,
+    "unit": "Pickup 11 · Toyota Hilux",
+    "unit_id": 206,
+    "rule": "offline",
+    "severity": "warning",
+    "status": "open",
+    "title": "No data for 1.0 h",
+    "details": {
+      "last_message_at": 1794998820,
+      "silent_s": 3600
+    }
+  },
+  {
+    "id": 6,
+    "opened_at": 1795025580,
+    "resolved_at": null,
+    "unit": "Fuel truck 05 · MAN TGS",
+    "unit_id": 203,
+    "rule": "depot-night-exit",
+    "severity": "warning",
+    "status": "open",
+    "title": "left zone depot",
+    "details": {
+      "zone": "depot",
+      "lat": 41.234,
+      "lon": 69.156667
+    }
+  }
+]

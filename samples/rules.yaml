@@ -1,0 +1,83 @@
+# Rules for the demo fleet in samples/demo-trace.jsonl.
+# Copy this file, change unit ids/zones/limits for your fleet and point RULES_FILE at it.
+# Secrets are never written here: use ${ENV_NAME} references.
+
+timezone: Asia/Tashkent
+cooldown_minutes: 30          # one-shot alerts (fuel drain, geofence) per unit+rule
+
+zones:
+  depot:
+    type: circle
+    center: [41.23000, 69.15000]
+    radius_m: 400
+  quarry:
+    type: polygon
+    points:
+      - [41.3080, 69.0200]
+      - [41.3080, 69.0310]
+      - [41.3020, 69.0310]
+      - [41.3020, 69.0200]
+
+units:
+  "202":
+    groups: [construction]
+    fuel:
+      param: rs485_lls1        # Escort/Omnicomm-style LLS on RS-485, first sensor
+      # raw value -> litres, same table as in the Wialon sensor (Calibration table tab)
+      table: [[30, 0], [433, 30.3], [836, 65.9], [1239, 103.9], [1642, 143.3], [2045, 184.0],
+              [2448, 225.7], [2851, 268.3], [3254, 311.5], [3657, 355.5], [4060, 400.0]]
+  "203": { groups: [fuel-logistics] }
+
+rules:
+  - id: offline
+    type: offline
+    after_minutes: 60
+    severity: warning
+
+  - id: overspeed
+    type: overspeed
+    limit_kmh: 90
+    min_duration_s: 120       # ignore short overtaking manoeuvres
+    severity: warning
+
+  - id: power-cut
+    type: power_loss
+    param: pwr_ext            # Teltonika external voltage, volts
+    below_volts: 9.0
+    min_duration_s: 60
+    severity: critical
+
+  - id: gps-lost
+    type: gps_lost
+    min_satellites: 4
+    min_duration_s: 600
+    severity: critical
+
+  - id: fuel-drain
+    type: fuel_drain
+    min_litres: 25
+    window_minutes: 30
+    max_speed_kmh: 5
+    severity: critical
+
+  - id: depot-night-exit
+    type: geofence
+    zone: depot
+    trigger: exit
+    active_hours: "22:00-06:00"
+    severity: warning
+
+notifiers:
+  - name: log
+    type: log
+    min_severity: info
+  # - name: dispatch-chat
+  #   type: telegram
+  #   token: ${TELEGRAM_BOT_TOKEN}
+  #   chat_id: ${TELEGRAM_CHAT_ID}
+  #   min_severity: warning
+  # - name: crm
+  #   type: webhook
+  #   url: https://crm.example.com/hooks/fleet-alerts
+  #   secret: ${WEBHOOK_SECRET}
+  #   min_severity: critical
